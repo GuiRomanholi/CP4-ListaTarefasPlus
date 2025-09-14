@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../screens/Login';
 import Cadastro from '../screens/Cadastro';
 
-type RootStackParamList = {
+export type RootStackParamList = {
     Login: undefined;
     Cadastro: undefined;
     };

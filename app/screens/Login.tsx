@@ -1,35 +1,28 @@
 import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation';
 
-export default function Cadastro({ navigation }: any) {
-  const [nome, setNome] = useState('');
+type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+
+export default function Login({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [confirmar, setConfirmar] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   const validarEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value);
 
-  const handleCadastrar = () => {
-    if (!nome.trim()) { Alert.alert('Nome obrigatório', 'Informe seu nome.'); return; }
+  const handleEntrar = () => {
     if (!validarEmail(email)) { Alert.alert('E-mail inválido', 'Digite um e-mail válido.'); return; }
-    if (senha.length < 6) { Alert.alert('Senha fraca', 'Use pelo menos 6 caracteres.'); return; }
-    if (senha !== confirmar) { Alert.alert('Senhas diferentes', 'A confirmação precisa ser igual.'); return; }
-    Alert.alert('Cadastro', `Usuário ${nome} criado.`);
-    navigation?.navigate?.('Login');
+    if (!senha) { Alert.alert('Senha obrigatória', 'Digite a senha.'); return; }
+    Alert.alert('Login', `E-mail: ${email}`);
   };
 
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
-        <Text style={styles.titulo}>Criar conta</Text>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>Nome</Text>
-          <TextInput style={styles.input} placeholder="Seu nome" value={nome} onChangeText={setNome} />
-        </View>
-
+        <Text style={styles.titulo}>Entrar</Text>
         <View style={styles.field}>
           <Text style={styles.label}>E-mail</Text>
           <TextInput
@@ -41,7 +34,6 @@ export default function Cadastro({ navigation }: any) {
             onChangeText={setEmail}
           />
         </View>
-
         <View style={styles.field}>
           <Text style={styles.label}>Senha</Text>
           <View style={{ position: 'relative' }}>
@@ -57,26 +49,13 @@ export default function Cadastro({ navigation }: any) {
             </TouchableOpacity>
           </View>
         </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>Confirmar senha</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="••••••••"
-            secureTextEntry={!mostrarSenha}
-            value={confirmar}
-            onChangeText={setConfirmar}
-          />
-        </View>
-
-        <TouchableOpacity style={styles.btnPrimario} onPress={handleCadastrar}>
-          <Text style={styles.btnPrimarioTxt}>Criar conta</Text>
+        <TouchableOpacity style={styles.btnPrimario} onPress={handleEntrar}>
+          <Text style={styles.btnPrimarioTxt}>Entrar</Text>
         </TouchableOpacity>
-
         <View style={styles.rodape}>
-          <Text style={{ color: '#666' }}>Já tem conta?</Text>
-          <TouchableOpacity onPress={() => navigation?.navigate?.('Login')}>
-            <Text style={styles.link}> Entrar</Text>
+          <Text style={{ color: '#666' }}>Não tem conta?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
+            <Text style={styles.link}> Criar conta</Text>
           </TouchableOpacity>
         </View>
       </View>
