@@ -1,61 +1,71 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation';
+import { useTheme } from '../theme/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function Login({ navigation }: Props) {
+  const { colors, toggleTheme, mode } = useTheme();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  const validarEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value);
-
-  const handleEntrar = () => {
-    if (!validarEmail(email)) { Alert.alert('E-mail inválido', 'Digite um e-mail válido.'); return; }
-    if (!senha) { Alert.alert('Senha obrigatória', 'Digite a senha.'); return; }
-    Alert.alert('Login', `E-mail: ${email}`);
-  };
+  const styles = getStyles(colors);
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
+      <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+        <Ionicons name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'} size={22} color={colors.link} />
+      </TouchableOpacity>
       <View style={styles.container}>
-        <Text style={styles.titulo}>Entrar</Text>
+        <Text style={[styles.titulo, { color: colors.text }]}>Entrar</Text>
+
         <View style={styles.field}>
-          <Text style={styles.label}>E-mail</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="seuemail@exemplo.com"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
-        <View style={styles.field}>
-          <Text style={styles.label}>Senha</Text>
-          <View style={{ position: 'relative' }}>
+          <Text style={[styles.label, { color: colors.label }]}>E-mail</Text>
+          <View style={styles.inputWrapper}>
+            <Ionicons name="mail-outline" size={18} color={colors.muted} style={styles.leftIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 40 }]}
+              placeholder="seuemail@exemplo.com"
+              placeholderTextColor={colors.muted}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+        </View>
+
+        <View style={styles.field}>
+          <Text style={[styles.label, { color: colors.label }]}>Senha</Text>
+          <View style={styles.inputWrapper}>
+            <Ionicons name="lock-closed-outline" size={18} color={colors.muted} style={styles.leftIcon} />
+            <TextInput
+              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 40, paddingRight: 40 }]}
               placeholder="••••••••"
+              placeholderTextColor={colors.muted}
               secureTextEntry={!mostrarSenha}
               value={senha}
               onChangeText={setSenha}
             />
-            <TouchableOpacity onPress={() => setMostrarSenha(s => !s)} style={styles.toggleSenha}>
-              <Text style={styles.toggleSenhaTxt}>{mostrarSenha ? 'Ocultar' : 'Mostrar'}</Text>
+            <TouchableOpacity onPress={() => setMostrarSenha(s => !s)} style={styles.rightIconBtn}>
+              <Ionicons name={mostrarSenha ? 'eye-off-outline' : 'eye-outline'} size={20} color={colors.link} />
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={styles.btnPrimario} onPress={handleEntrar}>
+
+        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={() => {}}>
           <Text style={styles.btnPrimarioTxt}>Entrar</Text>
         </TouchableOpacity>
+
         <View style={styles.rodape}>
-          <Text style={{ color: '#666' }}>Não tem conta?</Text>
+          <Text style={{ color: colors.muted }}>Não tem conta?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
-            <Text style={styles.link}> Criar conta</Text>
+            <Text style={[styles.link, { color: colors.link }]}> Criar conta</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -63,17 +73,20 @@ export default function Login({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  container: { flex: 1, padding: 20, gap: 16, justifyContent: 'center' },
-  titulo: { fontSize: 24, fontWeight: '700', marginBottom: 8 },
-  field: { gap: 6 },
-  label: { fontSize: 14, color: '#333' },
-  input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 12, fontSize: 16, backgroundColor: '#fff' },
-  toggleSenha: { position: 'absolute', right: 10, top: 12, padding: 6 },
-  toggleSenhaTxt: { color: '#007aff', fontSize: 14 },
-  btnPrimario: { backgroundColor: '#007aff', paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
-  btnPrimarioTxt: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  rodape: { flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
-  link: { color: '#007aff', fontWeight: '600' }
-});
+const getStyles = (colors: any) =>
+  StyleSheet.create({
+    safe: { flex: 1 },
+    container: { flex: 1, padding: 20, gap: 16, justifyContent: 'center' },
+    titulo: { fontSize: 24, fontWeight: '700', marginBottom: 8 },
+    field: { gap: 6 },
+    label: { fontSize: 14 },
+    inputWrapper: { position: 'relative' },
+    input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 12, fontSize: 16 },
+    leftIcon: { position: 'absolute', left: 12, top: 14 },
+    rightIconBtn: { position: 'absolute', right: 10, top: 10, padding: 6 },
+    btnPrimario: { paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
+    btnPrimarioTxt: { color: '#fff', fontSize: 16, fontWeight: '600' },
+    rodape: { flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
+    link: { fontWeight: '600' },
+    themeToggle: { position: 'absolute', right: 16, top: 44, zIndex: 2 },
+  });

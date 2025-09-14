@@ -1,6 +1,11 @@
 import 'react-native-gesture-handler';
 import RootNavigation from './app/navigation';
+import { ThemeProvider } from './app/theme/ThemeContext';
 
 export default function App() {
-  return <RootNavigation />;
+  return (
+    <ThemeProvider>
+      <RootNavigation />
+    </ThemeProvider>
+  );
 }
