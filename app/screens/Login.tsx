@@ -13,7 +13,6 @@ export default function Login({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
-
   const styles = getStyles(colors);
 
   return (
@@ -21,15 +20,23 @@ export default function Login({ navigation }: Props) {
       <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
         <Ionicons name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'} size={22} color={colors.link} />
       </TouchableOpacity>
+
       <View style={styles.container}>
         <Text style={[styles.titulo, { color: colors.text }]}>Entrar</Text>
 
         <View style={styles.field}>
           <Text style={[styles.label, { color: colors.label }]}>E-mail</Text>
           <View style={styles.inputWrapper}>
-            <Ionicons name="mail-outline" size={18} color={colors.muted} style={styles.leftIcon} />
             <TextInput
-              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 40 }]}
+              style={[
+                styles.input,
+                {
+                  color: colors.text,
+                  backgroundColor: colors.inputBg,
+                  borderColor: colors.inputBorder,
+                  paddingLeft: 44
+                }
+              ]}
               placeholder="seuemail@exemplo.com"
               placeholderTextColor={colors.muted}
               autoCapitalize="none"
@@ -37,20 +44,40 @@ export default function Login({ navigation }: Props) {
               value={email}
               onChangeText={setEmail}
             />
+            <Ionicons
+              name="mail-outline"
+              size={18}
+              color={colors.muted}
+              style={styles.leftIcon}
+            />
           </View>
         </View>
 
         <View style={styles.field}>
           <Text style={[styles.label, { color: colors.label }]}>Senha</Text>
           <View style={styles.inputWrapper}>
-            <Ionicons name="lock-closed-outline" size={18} color={colors.muted} style={styles.leftIcon} />
             <TextInput
-              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 40, paddingRight: 40 }]}
+              style={[
+                styles.input,
+                {
+                  color: colors.text,
+                  backgroundColor: colors.inputBg,
+                  borderColor: colors.inputBorder,
+                  paddingLeft: 44,
+                  paddingRight: 44
+                }
+              ]}
               placeholder="••••••••"
               placeholderTextColor={colors.muted}
               secureTextEntry={!mostrarSenha}
               value={senha}
               onChangeText={setSenha}
+            />
+            <Ionicons
+              name="lock-closed-outline"
+              size={18}
+              color={colors.muted}
+              style={styles.leftIcon}
             />
             <TouchableOpacity onPress={() => setMostrarSenha(s => !s)} style={styles.rightIconBtn}>
               <Ionicons name={mostrarSenha ? 'eye-off-outline' : 'eye-outline'} size={20} color={colors.link} />
@@ -82,11 +109,11 @@ const getStyles = (colors: any) =>
     label: { fontSize: 14 },
     inputWrapper: { position: 'relative' },
     input: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 12, fontSize: 16 },
-    leftIcon: { position: 'absolute', left: 12, top: 14 },
+    leftIcon: { position: 'absolute', left: 12, top: 14, zIndex: 2 },
     rightIconBtn: { position: 'absolute', right: 10, top: 10, padding: 6 },
     btnPrimario: { paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
     btnPrimarioTxt: { color: '#fff', fontSize: 16, fontWeight: '600' },
     rodape: { flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
     link: { fontWeight: '600' },
-    themeToggle: { position: 'absolute', right: 16, top: 44, zIndex: 2 },
+    themeToggle: { position: 'absolute', right: 16, top: 44, zIndex: 3 }
   });
