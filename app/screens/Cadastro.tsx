@@ -6,42 +6,66 @@ import type { RootStackParamList } from '../navigation';
 import { useTheme } from '../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../auth/AuthContext';
+import { FirebaseError } from 'firebase/app';
+import { useTranslation } from 'react-i18next';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
 
-export default function Login({ navigation }: Props) {
-  const { colors, toggleTheme, mode } = useTheme();
-  const { signIn } = useAuth();
+export default function Cadastro({ navigation }: Props) {
+  const { colors } = useTheme();
+  const { signUp } = useAuth();
+  const { t } = useTranslation(); 
+  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const styles = getStyles(colors);
 
-  const handleEntrar = async () => {
-    if (!/^\S+@\S+\.\S+$/.test(email)) { Alert.alert('E-mail inválido'); return; }
-    if (!senha) { Alert.alert('Senha obrigatória'); return; }
+  const handleCriarConta = async () => {
+    if (!nome.trim()) { Alert.alert(t('alerts.error'), t('alerts.nameRequired')); return; }
+    if (!/^\S+@\S+\.\S+$/.test(email)) { Alert.alert(t('alerts.error'), t('alerts.invalidEmail')); return; }
+    if (senha.length < 6) { Alert.alert(t('alerts.error'), t('alerts.passwordTooShort')); return; }
+
     try {
-      await signIn(email, senha);
+      await signUp(nome, email, senha);
     } catch (e: any) {
-      Alert.alert('Erro', e?.message || 'Falha no login');
+      if (e instanceof FirebaseError) {
+        if (e.code === 'auth/email-already-in-use') {
+            Alert.alert(t('alerts.error'), t('alerts.emailInUse'));
+        } else {
+            Alert.alert(t('alerts.error'), t('alerts.signupError'));
+        }
+      } else {
+        Alert.alert(t('alerts.error'), e?.message || 'Ocorreu um erro desconhecido.');
+      }
     }
   };
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
-      <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
-        <Ionicons name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'} size={22} color={colors.link} />
-      </TouchableOpacity>
-
       <View style={styles.container}>
-        <Text style={[styles.titulo, { color: colors.text }]}>Entrar</Text>
+        <Text style={[styles.titulo, { color: colors.text }]}>{t('auth.createAccount')}</Text>
 
         <View style={styles.field}>
-          <Text style={[styles.label, { color: colors.label }]}>E-mail</Text>
+          <Text style={[styles.label, { color: colors.label }]}>{t('auth.name')}</Text>
           <View style={styles.inputWrapper}>
             <TextInput
               style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44 }]}
-              placeholder="seuemail@exemplo.com"
+              placeholder={t('auth.namePlaceholder')}
+              placeholderTextColor={colors.muted}
+              value={nome}
+              onChangeText={setNome}
+            />
+            <Ionicons name="person-outline" size={18} color={colors.muted} style={styles.leftIcon} />
+          </View>
+        </View>
+        
+        <View style={styles.field}>
+          <Text style={[styles.label, { color: colors.label }]}>{t('auth.email')}</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44 }]}
+              placeholder={t('auth.emailPlaceholder')}
               placeholderTextColor={colors.muted}
               autoCapitalize="none"
               keyboardType="email-address"
@@ -53,11 +77,11 @@ export default function Login({ navigation }: Props) {
         </View>
 
         <View style={styles.field}>
-          <Text style={[styles.label, { color: colors.label }]}>Senha</Text>
+          <Text style={[styles.label, { color: colors.label }]}>{t('auth.password')}</Text>
           <View style={styles.inputWrapper}>
             <TextInput
               style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44, paddingRight: 44 }]}
-              placeholder="••••••••"
+              placeholder={t('auth.passwordPlaceholder')}
               placeholderTextColor={colors.muted}
               secureTextEntry={!mostrarSenha}
               value={senha}
@@ -70,14 +94,14 @@ export default function Login({ navigation }: Props) {
           </View>
         </View>
 
-        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={handleEntrar}>
-          <Text style={styles.btnPrimarioTxt}>Entrar</Text>
+        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={handleCriarConta}>
+          <Text style={styles.btnPrimarioTxt}>{t('auth.createAccount')}</Text>
         </TouchableOpacity>
 
         <View style={styles.rodape}>
-          <Text style={{ color: colors.muted }}>Não tem conta?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
-            <Text style={[styles.link, { color: colors.link }]}> Criar conta</Text>
+          <Text style={{ color: colors.muted }}>{t('auth.haveAccount')}</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={[styles.link, { color: colors.link }]}> {t('auth.login')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -100,5 +124,4 @@ const getStyles = (colors: any) =>
     btnPrimarioTxt: { color: '#fff', fontSize: 16, fontWeight: '600' },
     rodape: { flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
     link: { fontWeight: '600' },
-    themeToggle: { position: 'absolute', right: 16, top: 44, zIndex: 3 }
   });
