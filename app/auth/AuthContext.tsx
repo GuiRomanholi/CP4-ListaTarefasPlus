@@ -3,7 +3,7 @@ import { auth } from '../firebase/firebaseConfig';
 import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, User } from 'firebase/auth';
 
 type PublicUser = { id: string; name: string; email: string };
-type AuthCtx = {
+type Ctx = {
   user: PublicUser | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
@@ -11,7 +11,7 @@ type AuthCtx = {
   signOut: () => Promise<void>;
 };
 
-const Ctx = createContext<AuthCtx>({
+const AuthContext = createContext<Ctx>({
   user: null,
   loading: true,
   signIn: async () => {},
@@ -49,9 +49,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signOut(auth);
   };
 
-  return <Ctx.Provider value={{ user, loading, signIn, signUp, signOut: signOutFn }}>{children}</Ctx.Provider>;
+  return <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut: signOutFn }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
-  return useContext(Ctx);
+  return useContext(AuthContext);
 }
