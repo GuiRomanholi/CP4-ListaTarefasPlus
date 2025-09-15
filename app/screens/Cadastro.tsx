@@ -1,112 +1,98 @@
-import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigation';
-import { useTheme } from '../theme/ThemeContext';
-import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../auth/AuthContext';
-import { FirebaseError } from 'firebase/app';
-import { useTranslation } from 'react-i18next';
+import { useState } from 'react'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import type { RootStackParamList } from '../navigation'
+import { useTheme } from '../theme/ThemeContext'
+import { Ionicons } from '@expo/vector-icons'
+import { useAuth } from '../auth/AuthContext'
+import { useTranslation } from 'react-i18next'
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Cadastro'>
 
 export default function Cadastro({ navigation }: Props) {
-  const { colors } = useTheme();
-  const { signUp } = useAuth();
-  const { t } = useTranslation(); 
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [mostrarSenha, setMostrarSenha] = useState(false);
-  const styles = getStyles(colors);
+  const { colors, toggleTheme, mode } = useTheme()
+  const { signUp } = useAuth()
+  const { t } = useTranslation()
+  const [nome, setNome] = useState('')
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [show, setShow] = useState(false)
+  const styles = getStyles(colors)
 
-  const handleCriarConta = async () => {
-    if (!nome.trim()) { Alert.alert(t('alerts.error'), t('alerts.nameRequired')); return; }
-    if (!/^\S+@\S+\.\S+$/.test(email)) { Alert.alert(t('alerts.error'), t('alerts.invalidEmail')); return; }
-    if (senha.length < 6) { Alert.alert(t('alerts.error'), t('alerts.passwordTooShort')); return; }
-
-    try {
-      await signUp(nome, email, senha);
-    } catch (e: any) {
-      if (e instanceof FirebaseError) {
-        if (e.code === 'auth/email-already-in-use') {
-            Alert.alert(t('alerts.error'), t('alerts.emailInUse'));
-        } else {
-            Alert.alert(t('alerts.error'), t('alerts.signupError'));
-        }
-      } else {
-        Alert.alert(t('alerts.error'), e?.message || 'Ocorreu um erro desconhecido.');
-      }
-    }
-  };
+  async function handleSignUp() {
+    await signUp(nome, email, senha)
+  }
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={styles.safe}>
+      <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+        <Ionicons name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'} size={24} color={colors.text} />
+      </TouchableOpacity>
       <View style={styles.container}>
-        <Text style={[styles.titulo, { color: colors.text }]}>{t('auth.createAccount')}</Text>
+        <Text style={[styles.titulo, { color: colors.text }]}>{t('register')}</Text>
 
         <View style={styles.field}>
-          <Text style={[styles.label, { color: colors.label }]}>{t('auth.name')}</Text>
+          <Text style={[styles.label, { color: colors.label }]}>{t('name')}</Text>
           <View style={styles.inputWrapper}>
+            <Ionicons name="person-outline" size={18} color={colors.muted} style={styles.leftIcon} />
             <TextInput
-              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44 }]}
-              placeholder={t('auth.namePlaceholder')}
-              placeholderTextColor={colors.muted}
               value={nome}
               onChangeText={setNome}
-            />
-            <Ionicons name="person-outline" size={18} color={colors.muted} style={styles.leftIcon} />
-          </View>
-        </View>
-        
-        <View style={styles.field}>
-          <Text style={[styles.label, { color: colors.label }]}>{t('auth.email')}</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44 }]}
-              placeholder={t('auth.emailPlaceholder')}
+              placeholder={t('name')}
               placeholderTextColor={colors.muted}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              value={email}
-              onChangeText={setEmail}
+              style={[styles.input, { borderColor: colors.inputBorder, backgroundColor: colors.inputBg, color: colors.text, paddingLeft: 36 }]}
             />
-            <Ionicons name="mail-outline" size={18} color={colors.muted} style={styles.leftIcon} />
           </View>
         </View>
 
         <View style={styles.field}>
-          <Text style={[styles.label, { color: colors.label }]}>{t('auth.password')}</Text>
+          <Text style={[styles.label, { color: colors.label }]}>{t('email')}</Text>
           <View style={styles.inputWrapper}>
+            <Ionicons name="mail-outline" size={18} color={colors.muted} style={styles.leftIcon} />
             <TextInput
-              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44, paddingRight: 44 }]}
-              placeholder={t('auth.passwordPlaceholder')}
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              placeholder={t('email')}
               placeholderTextColor={colors.muted}
-              secureTextEntry={!mostrarSenha}
+              style={[styles.input, { borderColor: colors.inputBorder, backgroundColor: colors.inputBg, color: colors.text, paddingLeft: 36 }]}
+            />
+          </View>
+        </View>
+
+        <View style={styles.field}>
+          <Text style={[styles.label, { color: colors.label }]}>{t('password')}</Text>
+          <View style={styles.inputWrapper}>
+            <Ionicons name="lock-closed-outline" size={18} color={colors.muted} style={styles.leftIcon} />
+            <TextInput
               value={senha}
               onChangeText={setSenha}
+              secureTextEntry={!show}
+              placeholder={t('password')}
+              placeholderTextColor={colors.muted}
+              style={[styles.input, { borderColor: colors.inputBorder, backgroundColor: colors.inputBg, color: colors.text, paddingLeft: 36, paddingRight: 40 }]}
             />
-            <Ionicons name="lock-closed-outline" size={18} color={colors.muted} style={styles.leftIcon} />
-            <TouchableOpacity onPress={() => setMostrarSenha(s => !s)} style={styles.rightIconBtn}>
-              <Ionicons name={mostrarSenha ? 'eye-off-outline' : 'eye-outline'} size={20} color={colors.link} />
+            <TouchableOpacity style={styles.rightIconBtn} onPress={() => setShow(s => !s)}>
+              <Ionicons name={show ? 'eye-off-outline' : 'eye-outline'} size={18} color={colors.muted} />
             </TouchableOpacity>
           </View>
         </View>
 
-        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={handleCriarConta}>
-          <Text style={styles.btnPrimarioTxt}>{t('auth.createAccount')}</Text>
+        <TouchableOpacity onPress={handleSignUp} style={[styles.btnPrimario, { backgroundColor: colors.primary }]} accessibilityRole="button">
+          <Text style={styles.btnPrimarioTxt}>{t('signUp')}</Text>
         </TouchableOpacity>
 
         <View style={styles.rodape}>
-          <Text style={{ color: colors.muted }}>{t('auth.haveAccount')}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={[styles.link, { color: colors.link }]}> {t('auth.login')}</Text>
-          </TouchableOpacity>
+          <Text style={{ color: colors.muted }}>{t('haveAccount')}</Text>
+          <Text onPress={() => navigation.navigate('Login')} style={[styles.link, { color: colors.link }]} accessibilityRole="button">
+            {t('enter')}
+          </Text>
         </View>
       </View>
     </SafeAreaView>
-  );
+  )
 }
 
 const getStyles = (colors: any) =>
@@ -122,6 +108,7 @@ const getStyles = (colors: any) =>
     rightIconBtn: { position: 'absolute', right: 10, top: 10, padding: 6 },
     btnPrimario: { paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
     btnPrimarioTxt: { color: '#fff', fontSize: 16, fontWeight: '600' },
-    rodape: { flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
-    link: { fontWeight: '600' },
-  });
+    rodape: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 8, gap: 4 },
+    link: { fontWeight: '700' },
+    themeToggle: { position: 'absolute', right: 16, top: 44, zIndex: 3 }
+  })

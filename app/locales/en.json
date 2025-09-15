@@ -1,35 +1,25 @@
 {
-  "auth": {
-    "login": "Login",
-    "createAccount": "Create Account",
-    "name": "Name",
-    "namePlaceholder": "Your full name",
-    "email": "Email",
-    "emailPlaceholder": "youremail@example.com",
-    "password": "Password",
-    "passwordPlaceholder": "••••••••",
-    "noAccount": "Don't have an account?",
-    "haveAccount": "Already have an account?",
-    "continueWithGoogle": "Continue with Google"
-  },
-  "home": {
-    "title": "My Tasks",
-    "newTaskPlaceholder": "New task",
-    "emptyList": "No tasks here",
-    "holidaysTitle": "Upcoming Holidays"
-  },
-  "alerts": {
-    "error": "Error",
-    "nameRequired": "Name is required.",
-    "invalidEmail": "Please enter a valid email.",
-    "passwordTooShort": "Password must be at least 6 characters long.",
-    "emailInUse": "This email is already in use.",
-    "signupError": "An error occurred while creating the account. Please try again.",
-    "invalidCredentials": "Invalid credentials.",
-    "deleteTaskTitle": "Delete Task",
-    "deleteTaskMessage": "Are you sure you want to delete this task?",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "errorLoadingHolidays": "Error loading holidays."
-  }
+  "appTitle": "Tasks+",
+  "login": "Login",
+  "register": "Register",
+  "name": "Name",
+  "email": "Email",
+  "password": "Password",
+  "signIn": "Sign in",
+  "signUp": "Create account",
+  "logout": "Logout",
+  "tasks": "Tasks",
+  "addTask": "Add a task",
+  "placeholderTask": "What do you need to do?",
+  "emptyList": "Nothing here yet",
+  "noAccount": "Don’t have an account?",
+  "haveAccount": "Already have an account?",
+  "createAccount": "Create account",
+  "enter": "Enter",
+  "save": "Save",
+  "delete": "Delete",
+  "language": "Language",
+  "pt": "Portuguese",
+  "en": "English",
+  "cancel": "Cancel"
 }

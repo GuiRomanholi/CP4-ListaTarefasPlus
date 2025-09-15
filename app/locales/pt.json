@@ -1,35 +1,25 @@
 {
-  "auth": {
-    "login": "Login",
-    "createAccount": "Create Account",
-    "name": "Name",
-    "namePlaceholder": "Your full name",
-    "email": "Email",
-    "emailPlaceholder": "youremail@example.com",
-    "password": "Password",
-    "passwordPlaceholder": "••••••••",
-    "noAccount": "Don't have an account?",
-    "haveAccount": "Already have an account?",
-    "continueWithGoogle": "Continue with Google"
-  },
-  "home": {
-    "title": "My Tasks",
-    "newTaskPlaceholder": "New task",
-    "emptyList": "No tasks here",
-    "holidaysTitle": "Upcoming Holidays"
-  },
-  "alerts": {
-    "error": "Error",
-    "nameRequired": "Name is required.",
-    "invalidEmail": "Please enter a valid email.",
-    "passwordTooShort": "Password must be at least 6 characters long.",
-    "emailInUse": "This email is already in use.",
-    "signupError": "An error occurred while creating the account. Please try again.",
-    "invalidCredentials": "Invalid credentials.",
-    "deleteTaskTitle": "Delete Task",
-    "deleteTaskMessage": "Are you sure you want to delete this task?",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "errorLoadingHolidays": "Error loading holidays."
-  }
+  "appTitle": "Tarefas+",
+  "login": "Entrar",
+  "register": "Cadastrar",
+  "name": "Nome",
+  "email": "Email",
+  "password": "Senha",
+  "signIn": "Entrar",
+  "signUp": "Criar conta",
+  "logout": "Sair",
+  "tasks": "Tarefas",
+  "addTask": "Adicionar tarefa",
+  "placeholderTask": "O que você precisa fazer?",
+  "emptyList": "Nada por aqui ainda",
+  "noAccount": "Não tem conta?",
+  "haveAccount": "Já tem conta?",
+  "createAccount": "Criar conta",
+  "enter": "Entrar",
+  "save": "Salvar",
+  "delete": "Excluir",
+  "language": "Idioma",
+  "pt": "Português",
+  "en": "Inglês",
+  "cancel": "Cancelar"
 }
