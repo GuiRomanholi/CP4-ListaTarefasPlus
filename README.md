@@ -53,3 +53,17 @@ O aplicativo "Lista Tarefas Plus" cumpre todos os requisitos obrigatórios do Ch
     ```
 
 5.  Leia o QR Code com o aplicativo Expo Go no seu celular.
+
+---
+
+## Importante
+
+Bom dia professor,
+
+Eu e meu grupo fizemos e refizemos todo o código diversas vezes, mas estava dando o erro da imagem o tempo todo na hora de compilar e buildar:
+
+![Image](images/arquitetura_atual.png)
+
+Devido a esse erro persistente, não conseguimos gravar o vídeo, ficamos até o último segundo tentando, mas ele teimava em aparecer em todas as máquinas que tentávamos rodar o aplicativo. É possível ver pelo código que fizemos tudo o que foi solicitado, mas infelizmente não conseguimos abrir o aplicativo. Sabemos que não há vídeo, mas agradeceríamos muito pela sua compreensão.
+
+---
