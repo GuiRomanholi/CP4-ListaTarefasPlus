@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation';
 import { useTheme } from '../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../services/firebase';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -14,6 +16,16 @@ export default function Login({ navigation }: Props) {
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const styles = getStyles(colors);
+
+  const handleEntrar = async () => {
+    if (!/^\S+@\S+\.\S+$/.test(email)) { Alert.alert('E-mail inválido', 'Digite um e-mail válido.'); return; }
+    if (!senha) { Alert.alert('Senha obrigatória', 'Digite a senha.'); return; }
+    try {
+      await signInWithEmailAndPassword(auth, email, senha);
+    } catch (e: any) {
+      Alert.alert('Erro', e?.message ?? 'Falha no login.');
+    }
+  };
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
@@ -28,15 +40,7 @@ export default function Login({ navigation }: Props) {
           <Text style={[styles.label, { color: colors.label }]}>E-mail</Text>
           <View style={styles.inputWrapper}>
             <TextInput
-              style={[
-                styles.input,
-                {
-                  color: colors.text,
-                  backgroundColor: colors.inputBg,
-                  borderColor: colors.inputBorder,
-                  paddingLeft: 44
-                }
-              ]}
+              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44 }]}
               placeholder="seuemail@exemplo.com"
               placeholderTextColor={colors.muted}
               autoCapitalize="none"
@@ -44,12 +48,7 @@ export default function Login({ navigation }: Props) {
               value={email}
               onChangeText={setEmail}
             />
-            <Ionicons
-              name="mail-outline"
-              size={18}
-              color={colors.muted}
-              style={styles.leftIcon}
-            />
+            <Ionicons name="mail-outline" size={18} color={colors.muted} style={styles.leftIcon} />
           </View>
         </View>
 
@@ -57,35 +56,21 @@ export default function Login({ navigation }: Props) {
           <Text style={[styles.label, { color: colors.label }]}>Senha</Text>
           <View style={styles.inputWrapper}>
             <TextInput
-              style={[
-                styles.input,
-                {
-                  color: colors.text,
-                  backgroundColor: colors.inputBg,
-                  borderColor: colors.inputBorder,
-                  paddingLeft: 44,
-                  paddingRight: 44
-                }
-              ]}
+              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44, paddingRight: 44 }]}
               placeholder="••••••••"
               placeholderTextColor={colors.muted}
               secureTextEntry={!mostrarSenha}
               value={senha}
               onChangeText={setSenha}
             />
-            <Ionicons
-              name="lock-closed-outline"
-              size={18}
-              color={colors.muted}
-              style={styles.leftIcon}
-            />
+            <Ionicons name="lock-closed-outline" size={18} color={colors.muted} style={styles.leftIcon} />
             <TouchableOpacity onPress={() => setMostrarSenha(s => !s)} style={styles.rightIconBtn}>
               <Ionicons name={mostrarSenha ? 'eye-off-outline' : 'eye-outline'} size={20} color={colors.link} />
             </TouchableOpacity>
           </View>
         </View>
 
-        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={() => {}}>
+        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={handleEntrar}>
           <Text style={styles.btnPrimarioTxt}>Entrar</Text>
         </TouchableOpacity>
 

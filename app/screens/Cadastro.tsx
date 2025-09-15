@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation';
 import { useTheme } from '../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '../services/firebase';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
 
@@ -16,6 +18,19 @@ export default function Cadastro({ navigation }: Props) {
   const [confirmar, setConfirmar] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const styles = getStyles(colors);
+
+  const handleCadastrar = async () => {
+    if (!nome.trim()) { Alert.alert('Nome obrigatório', 'Informe seu nome.'); return; }
+    if (!/^\S+@\S+\.\S+$/.test(email)) { Alert.alert('E-mail inválido', 'Digite um e-mail válido.'); return; }
+    if (senha.length < 6) { Alert.alert('Senha fraca', 'Use pelo menos 6 caracteres.'); return; }
+    if (senha !== confirmar) { Alert.alert('Senhas diferentes', 'A confirmação precisa ser igual.'); return; }
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, senha);
+      await updateProfile(cred.user, { displayName: nome });
+    } catch (e: any) {
+      Alert.alert('Erro', e?.message ?? 'Falha ao criar conta.');
+    }
+  };
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
@@ -30,15 +45,7 @@ export default function Cadastro({ navigation }: Props) {
           <Text style={[styles.label, { color: colors.label }]}>Nome</Text>
           <View style={styles.inputWrapper}>
             <TextInput
-              style={[
-                styles.input,
-                {
-                  color: colors.text,
-                  backgroundColor: colors.inputBg,
-                  borderColor: colors.inputBorder,
-                  paddingLeft: 44
-                }
-              ]}
+              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44 }]}
               placeholder="Seu nome"
               placeholderTextColor={colors.muted}
               value={nome}
@@ -52,15 +59,7 @@ export default function Cadastro({ navigation }: Props) {
           <Text style={[styles.label, { color: colors.label }]}>E-mail</Text>
           <View style={styles.inputWrapper}>
             <TextInput
-              style={[
-                styles.input,
-                {
-                  color: colors.text,
-                  backgroundColor: colors.inputBg,
-                  borderColor: colors.inputBorder,
-                  paddingLeft: 44
-                }
-              ]}
+              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44 }]}
               placeholder="seuemail@exemplo.com"
               placeholderTextColor={colors.muted}
               autoCapitalize="none"
@@ -76,16 +75,7 @@ export default function Cadastro({ navigation }: Props) {
           <Text style={[styles.label, { color: colors.label }]}>Senha</Text>
           <View style={styles.inputWrapper}>
             <TextInput
-              style={[
-                styles.input,
-                {
-                  color: colors.text,
-                  backgroundColor: colors.inputBg,
-                  borderColor: colors.inputBorder,
-                  paddingLeft: 44,
-                  paddingRight: 44
-                }
-              ]}
+              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44, paddingRight: 44 }]}
               placeholder="••••••••"
               placeholderTextColor={colors.muted}
               secureTextEntry={!mostrarSenha}
@@ -103,15 +93,7 @@ export default function Cadastro({ navigation }: Props) {
           <Text style={[styles.label, { color: colors.label }]}>Confirmar senha</Text>
           <View style={styles.inputWrapper}>
             <TextInput
-              style={[
-                styles.input,
-                {
-                  color: colors.text,
-                  backgroundColor: colors.inputBg,
-                  borderColor: colors.inputBorder,
-                  paddingLeft: 44
-                }
-              ]}
+              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44 }]}
               placeholder="••••••••"
               placeholderTextColor={colors.muted}
               secureTextEntry={!mostrarSenha}
@@ -122,7 +104,7 @@ export default function Cadastro({ navigation }: Props) {
           </View>
         </View>
 
-        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={handleCadastrar}>
           <Text style={styles.btnPrimarioTxt}>Criar conta</Text>
         </TouchableOpacity>
 

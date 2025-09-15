@@ -29,7 +29,7 @@ const light: Colors = {
   inputBorder: '#dddddd',
   primary: '#007aff',
   link: '#007aff',
-  muted: '#666666',
+  muted: '#666666'
 };
 
 const dark: Colors = {
@@ -40,13 +40,13 @@ const dark: Colors = {
   inputBorder: '#2c2c2e',
   primary: '#0a84ff',
   link: '#0a84ff',
-  muted: '#999999',
+  muted: '#999999'
 };
 
 const ThemeContext = createContext<ThemeContextType>({
   mode: 'light',
   colors: light,
-  toggleTheme: () => {},
+  toggleTheme: () => {}
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
