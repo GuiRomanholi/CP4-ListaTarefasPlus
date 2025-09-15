@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation';
@@ -18,18 +18,16 @@ export default function Login({ navigation }: Props) {
   const styles = getStyles(colors);
 
   const handleEntrar = async () => {
-    if (!/^\S+@\S+\.\S+$/.test(email)) { Alert.alert('E-mail inválido'); return; }
-    if (!senha) { Alert.alert('Senha obrigatória'); return; }
+    if (!/^\S+@\S+\.\S+$/.test(email)) return;
+    if (!senha) return;
     try {
       await signIn(email, senha);
-    } catch (e: any) {
-      Alert.alert('Erro', e?.message || 'Falha no login');
-    }
+    } catch {}
   };
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
-      <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+      <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle} hitSlop={12}>
         <Ionicons name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'} size={22} color={colors.link} />
       </TouchableOpacity>
 
@@ -47,6 +45,7 @@ export default function Login({ navigation }: Props) {
               keyboardType="email-address"
               value={email}
               onChangeText={setEmail}
+              returnKeyType="next"
             />
             <Ionicons name="mail-outline" size={18} color={colors.muted} style={styles.leftIcon} />
           </View>
@@ -62,23 +61,25 @@ export default function Login({ navigation }: Props) {
               secureTextEntry={!mostrarSenha}
               value={senha}
               onChangeText={setSenha}
+              returnKeyType="done"
+              onSubmitEditing={handleEntrar}
             />
             <Ionicons name="lock-closed-outline" size={18} color={colors.muted} style={styles.leftIcon} />
-            <TouchableOpacity onPress={() => setMostrarSenha(s => !s)} style={styles.rightIconBtn}>
+            <TouchableOpacity onPress={() => setMostrarSenha(s => !s)} style={styles.rightIconBtn} hitSlop={12}>
               <Ionicons name={mostrarSenha ? 'eye-off-outline' : 'eye-outline'} size={20} color={colors.link} />
             </TouchableOpacity>
           </View>
         </View>
 
-        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={handleEntrar}>
+        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={handleEntrar} activeOpacity={0.8}>
           <Text style={styles.btnPrimarioTxt}>Entrar</Text>
         </TouchableOpacity>
 
         <View style={styles.rodape}>
           <Text style={{ color: colors.muted }}>Não tem conta?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
-            <Text style={[styles.link, { color: colors.link }]}> Criar conta</Text>
-          </TouchableOpacity>
+          <Text onPress={() => navigation.navigate('Cadastro')} style={[styles.link, { color: colors.link }]} accessibilityRole="button">
+             Criar conta
+          </Text>
         </View>
       </View>
     </SafeAreaView>
@@ -98,7 +99,7 @@ const getStyles = (colors: any) =>
     rightIconBtn: { position: 'absolute', right: 10, top: 10, padding: 6 },
     btnPrimario: { paddingVertical: 14, borderRadius: 12, alignItems: 'center', marginTop: 8 },
     btnPrimarioTxt: { color: '#fff', fontSize: 16, fontWeight: '600' },
-    rodape: { flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
-    link: { fontWeight: '600' },
+    rodape: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 8, gap: 4 },
+    link: { fontWeight: '700' },
     themeToggle: { position: 'absolute', right: 16, top: 44, zIndex: 3 }
   });
