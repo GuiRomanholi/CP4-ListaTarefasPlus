@@ -6,7 +6,7 @@ Projeto desenvolvido para a disciplina de Mobile Application Development do curs
 
 - Luiz Eduardo Da Silva Pinto - RM: 555213
 - Guilherme Romanholi Santos - RM: 557462
-- ???? - RM: 55????
+- Erick Alves - RM: 556862
 
 ## Funcionalidades
 

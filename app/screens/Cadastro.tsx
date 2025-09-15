@@ -5,30 +5,25 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation';
 import { useTheme } from '../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '../services/firebase';
+import { useAuth } from '../auth/AuthContext';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-export default function Cadastro({ navigation }: Props) {
+export default function Login({ navigation }: Props) {
   const { colors, toggleTheme, mode } = useTheme();
-  const [nome, setNome] = useState('');
+  const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [confirmar, setConfirmar] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const styles = getStyles(colors);
 
-  const handleCadastrar = async () => {
-    if (!nome.trim()) { Alert.alert('Nome obrigatório', 'Informe seu nome.'); return; }
-    if (!/^\S+@\S+\.\S+$/.test(email)) { Alert.alert('E-mail inválido', 'Digite um e-mail válido.'); return; }
-    if (senha.length < 6) { Alert.alert('Senha fraca', 'Use pelo menos 6 caracteres.'); return; }
-    if (senha !== confirmar) { Alert.alert('Senhas diferentes', 'A confirmação precisa ser igual.'); return; }
+  const handleEntrar = async () => {
+    if (!/^\S+@\S+\.\S+$/.test(email)) { Alert.alert('E-mail inválido'); return; }
+    if (!senha) { Alert.alert('Senha obrigatória'); return; }
     try {
-      const cred = await createUserWithEmailAndPassword(auth, email, senha);
-      await updateProfile(cred.user, { displayName: nome });
+      await signIn(email, senha);
     } catch (e: any) {
-      Alert.alert('Erro', e?.message ?? 'Falha ao criar conta.');
+      Alert.alert('Erro', e?.message || 'Falha no login');
     }
   };
 
@@ -39,21 +34,7 @@ export default function Cadastro({ navigation }: Props) {
       </TouchableOpacity>
 
       <View style={styles.container}>
-        <Text style={[styles.titulo, { color: colors.text }]}>Criar conta</Text>
-
-        <View style={styles.field}>
-          <Text style={[styles.label, { color: colors.label }]}>Nome</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44 }]}
-              placeholder="Seu nome"
-              placeholderTextColor={colors.muted}
-              value={nome}
-              onChangeText={setNome}
-            />
-            <Ionicons name="person-outline" size={18} color={colors.muted} style={styles.leftIcon} />
-          </View>
-        </View>
+        <Text style={[styles.titulo, { color: colors.text }]}>Entrar</Text>
 
         <View style={styles.field}>
           <Text style={[styles.label, { color: colors.label }]}>E-mail</Text>
@@ -89,29 +70,14 @@ export default function Cadastro({ navigation }: Props) {
           </View>
         </View>
 
-        <View style={styles.field}>
-          <Text style={[styles.label, { color: colors.label }]}>Confirmar senha</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={[styles.input, { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.inputBorder, paddingLeft: 44 }]}
-              placeholder="••••••••"
-              placeholderTextColor={colors.muted}
-              secureTextEntry={!mostrarSenha}
-              value={confirmar}
-              onChangeText={setConfirmar}
-            />
-            <Ionicons name="lock-closed-outline" size={18} color={colors.muted} style={styles.leftIcon} />
-          </View>
-        </View>
-
-        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={handleCadastrar}>
-          <Text style={styles.btnPrimarioTxt}>Criar conta</Text>
+        <TouchableOpacity style={[styles.btnPrimario, { backgroundColor: colors.primary }]} onPress={handleEntrar}>
+          <Text style={styles.btnPrimarioTxt}>Entrar</Text>
         </TouchableOpacity>
 
         <View style={styles.rodape}>
-          <Text style={{ color: colors.muted }}>Já tem conta?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={[styles.link, { color: colors.link }]}> Entrar</Text>
+          <Text style={{ color: colors.muted }}>Não tem conta?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
+            <Text style={[styles.link, { color: colors.link }]}> Criar conta</Text>
           </TouchableOpacity>
         </View>
       </View>

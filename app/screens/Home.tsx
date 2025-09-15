@@ -4,11 +4,11 @@ import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Alert } 
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 import { addTask, deleteTask, listenTasks, toggleTask, type Task } from '../services/tasks';
-import { signOut } from 'firebase/auth';
-import { auth } from '../services/firebase';
+import { useAuth } from '../auth/AuthContext';
 
 export default function Home() {
   const { colors, mode, toggleTheme } = useTheme();
+  const { signOut } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState('');
 
@@ -45,7 +45,7 @@ export default function Home() {
           <TouchableOpacity onPress={toggleTheme} style={styles.iconBtn}>
             <Ionicons name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'} size={22} color={colors.link} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => signOut(auth)} style={styles.iconBtn}>
+          <TouchableOpacity onPress={signOut} style={styles.iconBtn}>
             <Ionicons name="log-out-outline" size={22} color={colors.link} />
           </TouchableOpacity>
         </View>

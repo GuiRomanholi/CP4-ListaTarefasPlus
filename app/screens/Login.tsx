@@ -5,25 +5,25 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation';
 import { useTheme } from '../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../services/firebase';
+import { useAuth } from '../auth/AuthContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function Login({ navigation }: Props) {
   const { colors, toggleTheme, mode } = useTheme();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const styles = getStyles(colors);
 
   const handleEntrar = async () => {
-    if (!/^\S+@\S+\.\S+$/.test(email)) { Alert.alert('E-mail inválido', 'Digite um e-mail válido.'); return; }
-    if (!senha) { Alert.alert('Senha obrigatória', 'Digite a senha.'); return; }
+    if (!/^\S+@\S+\.\S+$/.test(email)) { Alert.alert('E-mail inválido'); return; }
+    if (!senha) { Alert.alert('Senha obrigatória'); return; }
     try {
-      await signInWithEmailAndPassword(auth, email, senha);
+      await signIn(email, senha);
     } catch (e: any) {
-      Alert.alert('Erro', e?.message ?? 'Falha no login.');
+      Alert.alert('Erro', e?.message || 'Falha no login');
     }
   };
 

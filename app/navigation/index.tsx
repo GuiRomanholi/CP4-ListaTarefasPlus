@@ -1,35 +1,21 @@
-import { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { useEffect } from 'react';
+import { NavigationContainer, DarkTheme as NavDarkTheme, DefaultTheme as NavDefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../screens/Login';
 import Cadastro from '../screens/Cadastro';
 import Home from '../screens/Home';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '../services/firebase';
 import { View, ActivityIndicator } from 'react-native';
-import { DarkTheme as NavDarkTheme, DefaultTheme as NavDefaultTheme } from '@react-navigation/native';
 import { useTheme } from '../theme/ThemeContext';
+import { useAuth } from '../auth/AuthContext';
 
-export type RootStackParamList = {
-  Login: undefined;
-  Cadastro: undefined;
-  Home: undefined;
-};
-
+export type RootStackParamList = { Login: undefined; Cadastro: undefined; Home: undefined };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigation() {
-  const [user, setUser] = useState<User | null>(auth.currentUser);
-  const [loading, setLoading] = useState(true);
   const { mode } = useTheme();
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, u => {
-      setUser(u);
-      setLoading(false);
-    });
-    return unsub;
-  }, []);
+  useEffect(() => {}, [user]);
 
   if (loading) {
     return (
