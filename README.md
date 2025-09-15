@@ -62,7 +62,7 @@ Bom dia professor,
 
 Eu e meu grupo fizemos e refizemos todo o código diversas vezes, mas estava dando o erro da imagem o tempo todo na hora de compilar e buildar:
 
-![Image](images/arquitetura_atual.png)
+![Imagem de Erro](img/image.png)
 
 Devido a esse erro persistente, não conseguimos gravar o vídeo, ficamos até o último segundo tentando, mas ele teimava em aparecer em todas as máquinas que tentávamos rodar o aplicativo. É possível ver pelo código que fizemos tudo o que foi solicitado, mas infelizmente não conseguimos abrir o aplicativo. Sabemos que não há vídeo, mas agradeceríamos muito pela sua compreensão.
 
